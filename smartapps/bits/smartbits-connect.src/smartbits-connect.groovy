@@ -19,9 +19,9 @@ definition(
     author: "JuvsGamer",
     description: "Service Manager for SmartBits components",
     category: "Convenience",
-    iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
-    iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
-    iconX3Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png")
+    iconUrl: "https://raw.githubusercontent.com/juvs/SmartThingsPublic/master/smartapps/bits/smartbits-connect.src/smartbits-logo.png",
+    iconX2Url: "https://raw.githubusercontent.com/juvs/SmartThingsPublic/master/smartapps/bits/smartbits-connect.src/smartbits-logo@2x.png",
+    iconX3Url: "https://raw.githubusercontent.com/juvs/SmartThingsPublic/master/smartapps/bits/smartbits-connect.src/smartbits-logo@3x.png")
 
 
 preferences {
