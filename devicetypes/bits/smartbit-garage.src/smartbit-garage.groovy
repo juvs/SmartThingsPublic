@@ -17,11 +17,11 @@
 metadata {
 	definition (name: "SmartBit Garage", namespace: "bits", author: "JuvsGamer") {
     	capability "Garage Door Control"
+        capability "Sensor"
+        capability "Refresh"
 		capability "Configuration"
 		capability "Health Check"
-		capability "Notification"
 		capability "Polling"
-		capability "Refresh"
         
         command "lock"
         command "override"
