@@ -182,13 +182,6 @@ def parse(String description) {
 
 	def msg = parseLanMessage(description)
     def json = msg.json
-   
-    if (!state.mac || state.mac != descMap["mac"]) {
-    	log.debug "Mac address of device found ${descMap["mac"]}"
-        updateDataValue("mac", descMap["mac"])
-	}
-    if (state.mac != null && state.dni != state.mac) state.dni = setDeviceNetworkId(state.mac)   
-   
     log.debug "Lan Message : ${msg}"
     
     if (json != null) {
@@ -218,8 +211,16 @@ def parse(String description) {
                 }        		
             }
         }
+        
+        if (json.containsKey("macAddr")) {
+            if (!state.mac || state.mac != json.macAddr) {
+    			log.debug "Mac address of device found ${json.macAddr}"
+        		updateDataValue("mac", json.macAddr)
+            }
+    	}
     }
-
+    
+	if (state.mac != null && state.dni != state.mac) state.dni = setDeviceNetworkId(state.mac)
     if (!device.currentValue("ip") || (device.currentValue("ip") != getDataValue("ip"))) 
     	events << createEvent(name: 'ip', value: getDataValue("ip"))
 
