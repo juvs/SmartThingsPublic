@@ -2,6 +2,7 @@
  *  SmartBit Garage
  *
  *  Copyright 2018 JuvsGamer
+ *  Version: 1.0.0 
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  *  in compliance with the License. You may obtain a copy of the License at:
@@ -197,6 +198,9 @@ def parse(String description) {
     	if (json.containsKey("lockStatus")) {
         	events << createEvent(name: "lockStatus", value: json.lockStatus, displayed:false)
     	}
+        if (json.containsKey("override")) {
+        	events << createEvent(name: "overrideMode", value: json.override, displayed:false)
+        }        
     	if (json.containsKey("door")) {
             def descriptionText = ""
             def displayed = false
@@ -207,8 +211,12 @@ def parse(String description) {
             }
         	events << createEvent(name: "door", value: json.door, displayed: displayed)
     	}
-        if (json.containsKey("override")) {
-        	events << createEvent(name: "overrideMode", value: json.override, displayed:false)
+        if (json.containsKey("alarm")) {
+        	if (json.alarm == "open_garage_timeout") {
+                if (parent.sendNotification != null) {
+                    parent.sendNotification("PRECAUCION! El garage permanece abierto")
+                }        		
+            }
         }
     }
 
