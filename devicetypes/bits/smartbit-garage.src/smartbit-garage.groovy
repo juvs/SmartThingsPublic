@@ -179,17 +179,17 @@ def override() {
 def parse(String description) {
 	log.debug "Executing 'parse'"
     def events = []
-	// TODO: handle 'checkInterval' attribute
-	// TODO: handle 'DeviceWatch-DeviceStatus' attribute
-	// TODO: handle 'DeviceWatch-DeviceStatus' attribute
-	// TODO: handle 'switch' attribute
 
-	//log.debug "Parsing '${description}'"
 	def msg = parseLanMessage(description)
     def json = msg.json
    
+    if (!state.mac || state.mac != descMap["mac"]) {
+    	log.debug "Mac address of device found ${descMap["mac"]}"
+        updateDataValue("mac", descMap["mac"])
+	}
+    if (state.mac != null && state.dni != state.mac) state.dni = setDeviceNetworkId(state.mac)   
+   
     log.debug "Lan Message : ${msg}"
-    //log.debug "Json : '${json}'"
     
     if (json != null) {
     	if (json.containsKey("uptime")) {
@@ -214,7 +214,7 @@ def parse(String description) {
         if (json.containsKey("alarm")) {
         	if (json.alarm == "open_garage_timeout") {
                 if (parent.sendNotification != null) {
-                    parent.sendNotification("PRECAUCION! El garage permanece abierto")
+                    parent.sendNotification("ATENCION! El garage permanece abierto")
                 }        		
             }
         }
@@ -272,13 +272,6 @@ private updateDNI() {
     if (state.dni != null && state.dni != "" && device.deviceNetworkId != state.dni) {
        device.deviceNetworkId = state.dni
     }
-    //log.debug "ip : ${ip}, port: ${port}"
-    // Setting Network Device Id
-    //def iphex = convertIPtoHex(ip)
-    //def porthex = convertPortToHex(port)
-    //if (device.deviceNetworkId != "$iphex:$porthex") {
-    //    device.deviceNetworkId = "$iphex:$porthex"
-    //}
     log.debug "Device Network Id set to ${device.deviceNetworkId}"    
 }
 
