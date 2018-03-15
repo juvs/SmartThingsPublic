@@ -2,7 +2,8 @@
  *  SmartBit Garage
  *
  *  Copyright 2018 JuvsGamer
- *  Version: 1.0.0 
+ *  Version: 1.0.1
+ *  Date: 15 MAR 2018
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  *  in compliance with the License. You may obtain a copy of the License at:
@@ -25,6 +26,8 @@ metadata {
         
         command "lock"
         command "override"
+        command "reboot"
+        
         attribute "lockStatus", "string"
         attribute "overrideMode", "string"
 	}
@@ -64,18 +67,22 @@ metadata {
     		state "lastevent", label:'Last event\r\n${currentValue}'
 		}        
         
-        valueTile("ip", "ip", width: 2, height: 2) {
+        standardTile("reboot", "device.reboot", decoration: "flat", height: 2, width: 2, inactiveLabel: false) {
+            state "default", label:"Reboot", action:"reboot", icon:"", backgroundColor:"#FFFFFF"
+        }        
+        
+        valueTile("ip", "ip", width: 2, height: 1) {
     		state "ip", label:'IP Address\r\n${currentValue}'
 		}
         
-        valueTile("uptime", "uptime", width: 2, height: 2) {
+        valueTile("uptime", "uptime", width: 2, height: 1) {
     		state "uptime", label:'Up time\r\n${currentValue}'
 		}         
 	}
     
     main(["door"])
 	details(["door",
-    	"refresh", "override", "lock", "lastevent", "ip", "uptime"])      
+    	"refresh", "override", "lock", "lastevent", "reboot", "ip", "uptime"])      
 }
 
 // handle commands
@@ -172,6 +179,13 @@ def override() {
 	log.debug "Executing 'override'"
     def cmds = []
     cmds << getAction("/override")
+    response(cmds)
+}
+
+def reboot() {
+	log.debug "Executing 'reboot'"
+    def cmds = []
+    cmds << getAction("/reboot")
     response(cmds)
 }
 
