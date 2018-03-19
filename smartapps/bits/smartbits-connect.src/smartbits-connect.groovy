@@ -2,6 +2,8 @@
  *  SmartBits (Connect)
  *
  *  Copyright 2018 Juvenal Guzman
+ *  Version: 1.0.2
+ *  Date: 19 MAR 2018 
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  *  in compliance with the License. You may obtain a copy of the License at:
@@ -20,8 +22,8 @@ definition(
     description: "Service Manager for SmartBits components",
     category: "Convenience",
     iconUrl: "https://raw.githubusercontent.com/juvs/SmartThingsPublic/master/smartapps/bits/smartbits-connect.src/smartbits-logo.png",
-    iconX2Url: "https://raw.githubusercontent.com/juvs/SmartThingsPublic/master/smartapps/bits/smartbits-connect.src/smartbits-logo@2x.png",
-    iconX3Url: "https://raw.githubusercontent.com/juvs/SmartThingsPublic/master/smartapps/bits/smartbits-connect.src/smartbits-logo@3x.png")
+    iconX2Url: "https://raw.githubusercontent.com/juvs/SmartThingsPublic/master/smartapps/bits/smartbits-connect.src/smartbits-logo@x2.png",
+    iconX3Url: "https://raw.githubusercontent.com/juvs/SmartThingsPublic/master/smartapps/bits/smartbits-connect.src/smartbits-logo@x3.png")
 
 
 preferences {
@@ -166,7 +168,7 @@ def changeName(){
 }
 
 def discoveryPage(){
-   return deviceDiscovery()
+	return deviceDiscovery()
 }
 
 def deviceDiscovery(params=[:])
@@ -276,6 +278,9 @@ def updated() {
 def initialize() {
     ssdpSubscribe()
     runEvery5Minutes("ssdpDiscover")
+    //Listen to change modes
+    subscribe(location, modeChangeHandler)
+    subscribe(location, "alarmSystemStatus", onSHMEvent)
 }
 
 void ssdpSubscribe() {
@@ -302,11 +307,9 @@ def ssdpHandler(evt) {
     if (devices."${ssdpUSN}") {
         def d = devices."${ssdpUSN}"
         def child = getChildDevice(parsedEvent.mac)
-        def childIP
-        def childPort
         if (child) {
-            childIP = child.getDeviceDataByName("ip")
-            childPort = child.getDeviceDataByName("port").toString()
+            def childIP = child.getDeviceDataByName("ip")
+            def childPort = child.getDeviceDataByName("port").toString()
             log.debug "Device data: ($childIP:$childPort) - reporting data: (${convertHexToIP(parsedEvent.networkAddress)}:${convertHexToInt(parsedEvent.deviceAddress)})."
             log.debug "Event: ${parsedEvent}"
             if(childIP != convertHexToIP(parsedEvent.networkAddress) || childPort != convertHexToInt(parsedEvent.deviceAddress).toString()){
@@ -410,6 +413,35 @@ def uninstalled() {
     unsubscribe()
     getChildDevices().each {
         deleteChildDevice(it.deviceNetworkId)
+    }
+}
+
+def modeChangeHandler(evt) {
+    log.debug "Mode changed to ${evt.value}, not implemented!"
+    def currMode = location.mode
+}
+
+def onSHMEvent(evt){
+	log.debug "onSHMEvent event value is ${evt.value}"
+    if (evt.value == "stay" || evt.value == "away") {
+        getChildDevices().each {
+        	def type = it.getDataValue("bitType");
+            //log.debug "${it.deviceNetworkId} - ${type}"
+            if (type.startsWith("SmartBit Garage")) {
+            	log.debug "Locking SmartBit Garage Door ${it.deviceNetworkId}"
+                it.lock();
+            }
+        }    	
+    }
+    if (evt.value == "off") {
+        getChildDevices().each {
+        	def type = it.getDataValue("bitType");
+        	//log.debug "${it.deviceNetworkId} - ${type}"            
+            if (type.startsWith("SmartBit Garage")) {
+            	log.debug "Unlocking SmartBit Garage Door ${it.deviceNetworkId}"
+                it.unlock();
+            }
+        }     
     }
 }
 
