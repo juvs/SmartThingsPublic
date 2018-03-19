@@ -2,8 +2,8 @@
  *  SmartBit Garage
  *
  *  Copyright 2018 JuvsGamer
- *  Version: 1.0.1
- *  Date: 15 MAR 2018
+ *  Version: 1.0.2
+ *  Date: 19 MAR 2018
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  *  in compliance with the License. You may obtain a copy of the License at:
@@ -25,6 +25,7 @@ metadata {
 		capability "Polling"
         
         command "lock"
+        command "unlock"
         command "override"
         command "reboot"
         
@@ -55,7 +56,7 @@ metadata {
         
         standardTile("lock", "device.lockStatus", inactiveLabel: false, decoration: "flat", width: 2, height: 2) {
             state "unlock" , label:'', action:"lock", icon:"https://raw.githubusercontent.com/juvs/SmartThingsPublic/master/devicetypes/bits/smartbit-garage.src/lockopen@2x.png", backgroundColor:"#00a0dc"
-            state "locked", label:'', action:"lock", icon:"https://raw.githubusercontent.com/juvs/SmartThingsPublic/master/devicetypes/bits/smartbit-garage.src/lock@2x.png", backgroundColor:"#e86d13"
+            state "locked", label:'', action:"unlock", icon:"https://raw.githubusercontent.com/juvs/SmartThingsPublic/master/devicetypes/bits/smartbit-garage.src/lock@2x.png", backgroundColor:"#e86d13"
         }
         
         standardTile("override", "device.overrideMode", inactiveLabel: false, decoration: "flat", width: 2, height: 2) {
@@ -172,6 +173,13 @@ def lock() {
 	log.debug "Executing 'lock'"
     def cmds = []
     cmds << getAction("/lock")
+    response(cmds)
+}
+
+def unlock() {
+	log.debug "Executing 'unlock'"
+    def cmds = []
+    cmds << getAction("/unlock")
     response(cmds)
 }
 
