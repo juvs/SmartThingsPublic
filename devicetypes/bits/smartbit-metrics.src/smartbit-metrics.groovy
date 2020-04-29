@@ -16,7 +16,7 @@
  *
  */
 metadata {
-	definition (name: "SmartBit Metrics", namespace: "bits", author: "JuvsGamer") {
+	definition (name: "SmartBit Metrics", namespace: "bits", author: "JuvsGamer", runLocally: true, ocfDeviceType: "oic.d.sensor") {
         capability "Sensor"
         capability "Refresh"
 		capability "Configuration"
