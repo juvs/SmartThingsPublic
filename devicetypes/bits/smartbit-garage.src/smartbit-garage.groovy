@@ -20,13 +20,16 @@
  *
  */
 metadata {
-	definition (name: "SmartBit Garage", namespace: "bits", author: "JuvsGamer", ocfDeviceType: "oic.d.garagedoor") {
+	definition (name: "SmartBit Garage", namespace: "bits", author: "JuvsGamer", runLocally: true, ocfDeviceType: "oic.d.garagedoor") {
+    	capability "Actuator"
+		capability "Door Control"
     	capability "Garage Door Control"
         capability "Sensor"
         capability "Refresh"
 		capability "Configuration"
 		capability "Health Check"
 		capability "Polling"
+        capability "Contact Sensor"
         
         command "lock"
         command "unlock"
@@ -148,6 +151,7 @@ def open() {
         //Need to send both events to clear the current state
         sendEvent(name: "door", value: "closing")
         sendEvent(name: "door", value: "closed")
+        sendEvent(name: "contact", value: "closed")
     } else {
         def cmds = []
         cmds << getAction("/open")
@@ -166,6 +170,7 @@ def close() {
         //Need to send both events to clear the current state
         sendEvent(name: "door", value: "opening")
         sendEvent(name: "door", value: "open")
+        sendEvent(name: "contact", value: "open")
     } else {
         def cmds = []
         cmds << getAction("/close")
