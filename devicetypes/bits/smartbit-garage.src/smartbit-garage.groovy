@@ -4,6 +4,10 @@
  *  Copyright 2018 JuvsGamer
  *  Version: 1.0.2
  *  Date: 19 MAR 2018
+ *      Initial version
+ *  Version: 1.0.3
+ *  Date: 28 ABR 2019
+ *     Add ocfDeviceType
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  *  in compliance with the License. You may obtain a copy of the License at:
