@@ -16,7 +16,7 @@
  *
  */
 metadata {
-	definition (name: "SmartBit Garage", namespace: "bits", author: "JuvsGamer") {
+	definition (name: "SmartBit Garage", namespace: "bits", author: "JuvsGamer", ocfDeviceType: "oic.d.garagedoor") {
     	capability "Garage Door Control"
         capability "Sensor"
         capability "Refresh"
