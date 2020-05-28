@@ -92,25 +92,32 @@ metadata {
 	}
 }
 
-
-def getCheckInterval() {
+//def getCheckInterval() {
     // These are battery-powered devices, and it's not very critical
     // to know whether they're online or not – 12 hrs
-    log.debug "getCheckInterval"
-    return 4 * 60 * 60
+    //log.debug "getCheckInterval"
+    //return 4 * 60 * 60
+    //return 5
+//}
+
+private initializeCheckin() {
+	log.debug "CheckInterval : ${device.latestValue("checkInterval")}"
+    //Time in mins... It seams min value is 80 seconds, no matter you set lower, always use 80 seconds
+    def mins = 1
+    // Set the Health Check interval so that it can be skipped once plus 2 minutes.
+	def checkInterval = mins * 60
+    sendEvent(name: "checkInterval", value: checkInterval , displayed: false, data: [protocol: "lan", hubHardwareId: device.hub.hardwareID])
 }
 
 def installed() {
     log.debug "Installed"
-    sendEvent(name: "checkInterval", value: checkInterval, displayed: false)
+    initializeCheckin()
     refresh()
 }
 
 def updated() {
     log.debug "Updated"
-    if (device.latestValue("checkInterval") != checkInterval) {
-        sendEvent(name: "checkInterval", value: checkInterval, displayed: false)
-    }
+    initializeCheckin()
     refresh()
 }
 
@@ -156,9 +163,6 @@ def parse(description) {
     //log.debut "Parsed to ${evt1.inspect()} and ${evt2.inspect()}"
     return events
 }
-
-
-
 
 def open() {
     log.debug "Executing 'open'"
